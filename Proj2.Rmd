@@ -1,0 +1,69 @@
+---
+title: "Health and Economic Impact of Storm Damage"
+author: "Brian L. Fuller"
+date: "October 20, 2015"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+Synopsis
+-----
+
+Your data analysis must address the following questions:
+
+1. Across the United States, which types of events (as indicated in the EVTYPE
+variable) are most harmful with respect to population health?
+2. Across the United States, which types of events have the greatest economic
+consequences?
+
+
+
+Data Processing
+-----
+
+I'll begin by downloading the bz2 file if necessary and reading directly from
+it. Based on the questions to be answered, I will not need all of the columns. 
+I will specifically need event type (EVTYPE) and the columns which denote
+population health (23 FATALITIES, 24 INJURIES) and economic consequence (25 PROPDMG,
+26 PROPDMGEXP, 27 CROPDMG, and 28 CROPDMGEXP). I will also include several other
+columns (7 STATE, 5 COUNTY, 6 COUNTYNAME, 2 BGN_DATE) to aid with analysis.
+
+```{r, ReadRawData, cache=TRUE}
+library(readr)
+
+URL <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2"
+DestFile = "repdata_data_StormData.csv.bz2"
+
+# download bz2 version of input data file if needed, and unzip
+if(!file.exists(DestFile)){
+     library(R.utils) 
+     dlMethod <- "curl"
+     if(substr(Sys.getenv("OS"),1,7) == "Windows") dlMethod <- "wininet"
+     download.file(URL,destfile = DestFile, method = dlMethod, mode = "wb")
+     ##bunzip2(DestFile, "StormData.csv")
+}
+myData <- read_csv(DestFile,
+                   n_max = 902298, col_names = TRUE,
+                   col_types = "_c__nccc______________nnncnc_______c_")
+```
+
+In order to make the date column (BGN_DATE) useful, convert character date
+representation to an actual date representation.
+```{r}
+myData$BgnDate <- as.Date(myData$BGN_DATE, "%m/%d/%Y")
+```
+
+This is what our slightly conditioned dataset looks like
+```{r}
+head(myData)
+```
+
+Results
+-----
+
+
+
+
+
+
